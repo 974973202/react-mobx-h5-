@@ -29,13 +29,15 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { Button } from 'antd-mobile';
+import { Button, ActivityIndicator } from 'antd-mobile';
+import styles from './App.less';
 
 function Example() {
   const [count, setCount] = useState(0);
   const [val, setValue] = useState('');
   const [arr, setArr] = useState([]);
   const [status, setStatus] = useState(true);
+  const [data, setData] = useState([]);
 
   //useContext useReducer useCallback 
   // useMemo useRef useImperativeMethods 
@@ -67,10 +69,11 @@ function Example() {
 
   return (
     <div>
-      <p>You clicked {count} times</p>
+      <p  className={styles.title}>You clicked {count} times</p>
       <Button onClick={() => setCount(count + 1)}>
         Click me
       </Button>
+      {/* <ActivityIndicator /> */}
       <form onSubmit={(e) => handleSubmit(e)}>
         <input value={val} onChange={(e) => setValue(e.target.value)}/>
         {val}
@@ -85,7 +88,14 @@ function Example() {
           ) : null
         })}
       </form>
-      
+      {
+        data.map((e, i) => {
+          console.log(e, i)
+          return (
+            <div>{e.a}</div>
+          )
+        })
+      }
     </div>
   );
 }

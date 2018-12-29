@@ -26,46 +26,66 @@ const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
+// 源映射是资源密集型的，并且可能导致大型源文件的内存不足。
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
 // makes for a smoother build process.
+//有些应用程序不需要保存web请求的好处，因此不需要内联块
+//使构建过程更加流畅。
 const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 
 // Check if TypeScript is setup
+// 检查是否设置是Typescript
 const useTypeScript = fs.existsSync(paths.appTsConfig);
 
 // style files regexes
-const cssRegex = /\.css$/;
+// 样式正则表达式
+const cssRegex = [/\.css$/, /\.less$/];
 const cssModuleRegex = /\.module\.css$/;
+// const lessRegex = /\.(less)$/;
+// const lessModuleRegex = /\.module\.(less)$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
+//这是生产和开发配置。
+//它主要关注开发人员的经验、快速重建以及最小的包.
 module.exports = function(webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
 
   // Webpack uses `publicPath` to determine where the app is being served from.
+  // Webpack 使用 `publicPath` 来确定应用程序从何处提供服务。
   // It requires a trailing slash, or the file assets will get an incorrect path.
+  // 它需要一个尾随的斜杠，否则文件资产将得到一个不正确的路径。
   // In development, we always serve from the root. This makes config easier.
+  // 在开发环境下, 我们总是从根开始。这使得配置更加容易。
   const publicPath = isEnvProduction
     ? paths.servedPath
     : isEnvDevelopment && '/';
   // Some apps do not use client-side routing with pushState.
+  // 有些应用程序在推送状态中不使用客户端路由。
   // For these, "homepage" can be set to "." to enable relative asset paths.
+  // 对于这些，可以将“主页”设置为“.”，以启用相对资产路径
   const shouldUseRelativeAssetPaths = publicPath === './';
 
   // `publicUrl` is just like `publicPath`, but we will provide it to our app
   // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
   // Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
+  /**
+   * `publicUrl`和`publicPath`一样
+   * 但是，我们将把它作为%PUBLIC_URL%提供到`index.html'中，并将其作为`process.env.BLIC_URL'提供到JavaScript中。
+   */
   const publicUrl = isEnvProduction
     ? publicPath.slice(0, -1)
     : isEnvDevelopment && '';
   // Get environment variables to inject into our app.
+  // 获取环境变量以注入应用程序
   const env = getClientEnvironment(publicUrl);
 
   // common function to get style loaders
+  // 获取样式加载程序的常用函数
   const getStyleLoaders = (cssOptions, preProcessor) => {
     const loaders = [
       isEnvDevelopment && require.resolve('style-loader'),
@@ -100,6 +120,13 @@ module.exports = function(webpackEnv) {
           ],
           sourceMap: isEnvProduction && shouldUseSourceMap,
         },
+      },
+      // 添加以下代码支持less
+      {
+        loader: require.resolve('less-loader'),
+        options: {
+          javascriptEnabled: true          
+        }
       },
     ].filter(Boolean);
     if (preProcessor) {
@@ -357,34 +384,6 @@ module.exports = function(webpackEnv) {
                 compact: isEnvProduction,
               },
             },
-            {
-              test: /\.less$/,
-              use: [
-                require.resolve('style-loader'),
-                require.resolve('css-loader'),
-                {
-                  loader: require.resolve('postcss-loader'),
-                  options: {
-                    ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
-                    plugins: () => [
-                      pxtorem({
-                        rootValue: 100,
-                        propWhiteList: [],
-                      }),
-                      autoprefixer({
-                        browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
-                      }),
-                    ],
-                  },
-                },
-                {
-                  loader: require.resolve('less-loader'),
-                  options: {
-                    modifyVars: { "@primary-color": "#1DA57A" },
-                  },
-                },
-              ],
-            },
             // Process any JS outside of the app with Babel.
             // Unlike the application JS, we only compile the standard ES features.
             {
@@ -420,9 +419,25 @@ module.exports = function(webpackEnv) {
             // By default we support CSS Modules with the extension .module.css
             {
               test: cssRegex,
+              include: [/node_modules/],
               exclude: cssModuleRegex,
               use: getStyleLoaders({
                 importLoaders: 1,
+                sourceMap: isEnvProduction && shouldUseSourceMap,
+              }),
+              // Don't consider CSS imports dead code even if the
+              // containing package claims to have no side effects.
+              // Remove this when webpack adds a warning or an error for this.
+              // See https://github.com/webpack/webpack/issues/6571
+              sideEffects: true,
+            },
+            // 处理本地less 开启css-modules
+            {
+              test: cssRegex,
+              exclude: [cssModuleRegex, /node_modules/],
+              use: getStyleLoaders({
+                importLoaders: 1,
+                modules: true,
                 sourceMap: isEnvProduction && shouldUseSourceMap,
               }),
               // Don't consider CSS imports dead code even if the
@@ -442,6 +457,26 @@ module.exports = function(webpackEnv) {
                 getLocalIdent: getCSSModuleLocalIdent,
               }),
             },
+            // less
+            // {
+            //   test: lessRegex,
+            //   exclude: lessModuleRegex,
+            //   use: getStyleLoaders({
+            //     importLoaders: 3,
+            //     sourceMap: isEnvProduction && shouldUseSourceMap,
+            //   }, 'less-loader'),
+            //   // sideEffects: true,
+            // },
+            // {
+            //   test: lessModuleRegex,
+            //   use: getStyleLoaders({
+            //     importLoaders: 3,
+            //     sourceMap: isEnvProduction && shouldUseSourceMap,
+            //     modules: true,
+            //     getLocalIdent: getCSSModuleLocalIdent,
+            //   }, 'less-loader'),
+            // },
+
             // Opt-in support for SASS (using .scss or .sass extensions).
             // By default we support SASS Modules with the
             // extensions .module.scss or .module.sass
@@ -525,16 +560,23 @@ module.exports = function(webpackEnv) {
         )
       ),
       // Inlines the webpack runtime script. This script is too small to warrant
+      // 内联Webpack运行时脚本。这个脚本太小了，不能保证。
       // a network request.
+      // 一个网络请求
       isEnvProduction &&
         shouldInlineRuntimeChunk &&
         new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime~.+[.]js/]),
       // Makes some environment variables available in index.html.
+      // 在index.html中提供一些环境变量。
       // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
+      // 公共URL在index.html中作为%PUBLIC_URL%可用，例如：
       // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
       // In production, it will be an empty string unless you specify "homepage"
+      // 在生产中，除非您指定“主页”，否则它将是一个空字符串
       // in `package.json`, in which case it will be the pathname of that URL.
+      // 在package.json中, 在这种情况下，它将是该URL的路径名。
       // In development, this will be an empty string.
+      // 在开发环境下，这将是一个空字符串。
       new InterpolateHtmlPlugin(HtmlWebpackPlugin, env.raw),
       // This gives some necessary context to module not found errors, such as
       // the requesting resource.
