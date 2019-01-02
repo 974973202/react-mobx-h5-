@@ -4,8 +4,10 @@ const path = require('path');
 const fs = require('fs');
 const url = require('url');
 
-// Make sure any symlinks in the project folder are resolved:
-// https://github.com/facebook/create-react-app/issues/637
+// 确保已解析项目文件夹中的所有符号链接：
+// process.cwd() 返回进程的当前工作目录。
+// fs.realpathSync 返回解析的路径。
+// path.resolve 将路径或路径片段处理成绝对路径。
 const appDirectory = fs.realpathSync(process.cwd());
 const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
@@ -52,7 +54,7 @@ const moduleFileExtensions = [
   'jsx',
 ];
 
-// Resolve file paths in the same order as webpack
+// 按与WebPack相同的顺序解析文件路径
 const resolveModule = (resolveFn, filePath) => {
   const extension = moduleFileExtensions.find(extension =>
     fs.existsSync(resolveFn(`${filePath}.${extension}`))
@@ -65,7 +67,7 @@ const resolveModule = (resolveFn, filePath) => {
   return resolveFn(`${filePath}.js`);
 };
 
-// config after eject: we're in ./config/
+// 弹出配置: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),

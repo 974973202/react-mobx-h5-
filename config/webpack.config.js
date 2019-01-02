@@ -13,10 +13,26 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const ManifestPlugin = require('webpack-manifest-plugin');
+// InterpolateHtmlPlugin 这个Webpack插件允许我们插入自定义变量index.html
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
+/**
+ * WatchMissingNodeModulesPlugin
+ * 此Webpack插件可确保npm install <library>强制项目重建。
+ * 我们不确定为什么这不是Webpack的默认行为
+ */
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+/**
+ * ModuleScopePlugin
+ * 此Webpack插件可确保从应用程序源目录的相对导入不会到达其外部
+ */
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+/**
+ * getCSSModuleLocalIdent(context: Object, localIdentName: String, localName: String, options: Object): string
+ * 为CSS模块创建一个类名，如果已命名，则使用文件名或文件夹名index.module.css。
+ * 对于MyFolder/MyComponent.module.css和类MyClass，输出将为MyComponent.module_MyClass__[hash] 
+ * For MyFolder/index.module.css和class MyClass，输出将是MyFolder_MyClass__[hash]
+ */
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
@@ -104,6 +120,9 @@ module.exports = function(webpackEnv) {
         // Options for PostCSS as we reference these options twice
         // Adds vendor prefixing based on your specified browser support in
         // package.json
+        /**
+         * Postss选项，因为我们引用了这些选项两次，根据您在package.json中指定的浏览器支持添加了供应商前缀。
+         */
         loader: require.resolve('postcss-loader'),
         options: {
           // Necessary for external CSS imports to work
@@ -178,12 +197,12 @@ module.exports = function(webpackEnv) {
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
       filename: isEnvProduction
-        ? 'static/js/[name].[chunkhash:8].js'
-        : isEnvDevelopment && 'static/js/bundle.js',
+        ? 'admin/js/[name].[chunkhash:8].js'
+        : isEnvDevelopment && 'admin/js/bundle.js',
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
-        ? 'static/js/[name].[chunkhash:8].chunk.js'
-        : isEnvDevelopment && 'static/js/[name].chunk.js',
+        ? 'admin/js/[name].[chunkhash:8].chunk.js'
+        : isEnvDevelopment && 'admin/js/[name].chunk.js',
       // We inferred the "public path" (such as / or /my-project) from homepage.
       // We use "/" in development.
       publicPath: publicPath,
@@ -302,6 +321,14 @@ module.exports = function(webpackEnv) {
         // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
         // please link the files into your node_modules/ and let module-resolution kick in.
         // Make sure your source files are compiled, as they will not be processed in any way.
+        /**
+         * 禁止用户从SRC/（或node_modules/）外部导入文件。
+            这通常会导致混淆，因为我们只处理带有babel的src/中的文件。
+            为了解决这个问题，我们阻止您从src/导入文件，如果您愿意，
+            请将这些文件链接到node_modules/中，让模块解析开始。
+            确保源文件已编译，因为不会以任何方式处理它们。
+            
+         */
         new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
       ],
     },
@@ -348,7 +375,7 @@ module.exports = function(webpackEnv) {
               loader: require.resolve('url-loader'),
               options: {
                 limit: 10000,
-                name: 'static/media/[name].[hash:8].[ext]',
+                name: 'admin/media/[name].[hash:8].[ext]',
               },
             },
             // Process application JS with Babel.
@@ -523,7 +550,7 @@ module.exports = function(webpackEnv) {
               // by webpacks internal loaders.
               exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/, /\.less$/],
               options: {
-                name: 'static/media/[name].[hash:8].[ext]',
+                name: 'admin/media/[name].[hash:8].[ext]',
               },
             },
             // ** STOP ** Are you adding a new loader?
@@ -603,8 +630,8 @@ module.exports = function(webpackEnv) {
         new MiniCssExtractPlugin({
           // Options similar to the same options in webpackOptions.output
           // both options are optional
-          filename: 'static/css/[name].[contenthash:8].css',
-          chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+          filename: 'admin/css/[name].[contenthash:8].css',
+          chunkFilename: 'admin/css/[name].[contenthash:8].chunk.css',
         }),
       // Generate a manifest file which contains a mapping of all asset filenames
       // to their corresponding output file so that tools can pick it up without

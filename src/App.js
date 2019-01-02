@@ -1,9 +1,11 @@
 // import React, { Component } from 'react';
 // import logo from './logo.svg';
-// import './App.css';
 
 // class App extends Component {
 //   render() {
+//     console.log(process.env)
+//     console.log(parseInt(process.env.PORT, 10) )
+
 //     return (
 //       <div className="App">
 //         <header className="App-header">
@@ -24,8 +26,8 @@
 //     );
 //   }
 // }
-
 // export default App;
+
 
 
 import React, { useState, useEffect } from 'react';
@@ -68,6 +70,7 @@ function Example() {
   }
 
   return (
+    console.log(process.env),
     <div>
       <p  className={styles.title}>You clicked {count} times</p>
       <Button onClick={() => setCount(count + 1)}>

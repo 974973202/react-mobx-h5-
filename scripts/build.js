@@ -22,9 +22,37 @@ const webpack = require('webpack');
 const bfj = require('bfj');
 const configFactory = require('../config/webpack.config');
 const paths = require('../config/paths');
+/**
+ * checkRequiredFiles
+ * 确保所有传递的文件都存在。
+    文件名应该是绝对的。
+    如果找不到文件，则输出警告消息并返回false。
+ */
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
+/**
+ * formatWebpackMessages
+ * 从webpack stats对象中提取并美化警告和错误消息
+ */
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
+/**
+ * printHostingInstructions
+ * 在项目构建之后打印托管指令
+ * 通过您的分析package.json对象appPackage，你的网址，
+ * 让您计划托管的应用程序的publicUrl，output.publicPath
+ * 从你的WebPack配置publicPath的buildFolder名称，以及是否useYarn在说明书
+ */
 const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
+/**
+ * FileSizeReporter
+ * const { measureFileSizesBeforeBuild, printFileSizesAfterBuild } = require('react-dev-utils/printBuildError');
+ * 解决一些已知的构建错误。传递Error对象以在控制台中记录已修饰的错误消息
+ * measureFileSizesBeforeBuild(buildFolder: string): Promise<OpaqueFileSizes>
+ * 在传递的内部捕获JS和CSS资产大小buildFolder。保存结果值以在构建后比较它
+ * 
+ * printFileSizesAfterBuild(webpackStats: WebpackStats, previousFileSizes: OpaqueFileSizes, buildFolder: string, maxBundleGzipSize?: number, maxChunkGzipSize?: number)
+ * 在构建之后打印JS和CSS资产大小，并包括与previousFileSizes之前使用的捕获的大小比较measureFileSizesBeforeBuild()。
+ * maxBundleGzipSize并且maxChunkGzipSizemay可以选择指定在主包或块超过指定大小（以字节为单位）时显示警告
+ */
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
 
