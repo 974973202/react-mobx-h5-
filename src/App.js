@@ -1,106 +1,72 @@
-// import React, { Component } from 'react';
-// import logo from './logo.svg';
+import React, { Component, Suspense } from 'react';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { createGlobalStyle } from 'styled-components';
+import { ActivityIndicator } from 'antd-mobile'
 
-// class App extends Component {
-//   render() {
-//     console.log(process.env)
-//     console.log(parseInt(process.env.PORT, 10) )
-
-//     return (
-//       <div className="App">
-//         <header className="App-header">
-//           <img src={logo} className="App-logo" alt="logo" />
-//           <p>
-//             Edit <code>src/App.js</code> and save to reload.
-//           </p>
-//           <a
-//             className="App-link"
-//             href="https://reactjs.org"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//           >
-//             Learn React
-//           </a>
-//         </header>
-//       </div>
-//     );
-//   }
-// }
-// export default App;
-
-
-
-import React, { useState, useEffect } from 'react';
-import { Button, ActivityIndicator } from 'antd-mobile';
-import styles from './App.less';
-
-function Example() {
-  const [count, setCount] = useState(0);
-  const [val, setValue] = useState('');
-  const [arr, setArr] = useState([]);
-  const [status, setStatus] = useState(true);
-  const [data, setData] = useState([]);
-
-  //useContext useReducer useCallback 
-  // useMemo useRef useImperativeMethods 
-  // useMutationEffect useLayoutEffect
-
-  // 类似于componentDidMount 和 componentDidUpdate:
-  useEffect(() => {
-    // 更新文档的标题
-    document.title = `You clicked ${count} times`;
-  });
-
-  // useEffect(() => {
-  //   console.log(123)
-  // });
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    setArr([...arr, { content: val, checked: false }])
-    setValue('')
-  }
-
-  function handlechecked(index) {
-    setArr([...arr.slice(0, index),{...arr[index],checked:!arr[index].checked}, ...arr.slice(index + 1)])
-  }
-
-  function handleDelete() {
-    setArr(arr.filter(ele => !ele.checked))
-  }
-
-  return (
-    console.log(process.env),
-    <div>
-      <p  className={styles.title}>You clicked {count} times</p>
-      <Button onClick={() => setCount(count + 1)}>
-        Click me
-      </Button>
-      {/* <ActivityIndicator /> */}
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <input value={val} onChange={(e) => setValue(e.target.value)}/>
-        {val}
-        <input type='submit'/>
-        <button onClick={() => handleDelete()}>Delete</button>
-        {arr.map((ele, index) => {
-          return (ele.content || ele.checked === status) ? (
-            <div key={index}>
-              <input type="checkbox" checked={ele.checked} onChange={()=>handlechecked(index)}/>
-              <p>{ele.content}</p>
-            </div>
-          ) : null
-        })}
-      </form>
-      {
-        data.map((e, i) => {
-          console.log(e, i)
-          return (
-            <div>{e.a}</div>
-          )
-        })
-      }
-    </div>
-  );
+createGlobalStyle`
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
 }
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}`;
 
-export default Example;
+
+const EntryPage = React.lazy(() => import('./pages/entry'));
+
+
+class App extends Component {
+  
+  render() {
+    return (
+      <Suspense fallback={<ActivityIndicator toast text="Loading..."/>}>
+        <BrowserRouter>
+          <Switch>
+            <Route path='/' exact component={() => <EntryPage/>} />
+            <Route
+              component={() => <div>404</div>}
+            />
+          </Switch>
+        </BrowserRouter>
+      </Suspense>
+    );
+  }
+}
+export default App;

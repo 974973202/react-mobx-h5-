@@ -1,0 +1,32 @@
+.musicFooter {
+  position: fixed;
+  bottom: 0;
+  height: 3.75rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    border-top: 1px solid #f0f0f0;
+    width: 100%;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    & div {
+      margin-left: 1rem;
+    }
+  }
+  .playlist {
+    display: flex;
+    align-items: center;
+    & i {
+      margin-right: 2rem;
+    }
+    // .actionSheet {
+    //   background-color: red;
+    // }
+  }
+}

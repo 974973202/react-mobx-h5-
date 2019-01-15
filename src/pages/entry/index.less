@@ -1,0 +1,62 @@
+.wrapper{
+  height: calc(100vh - 3.75rem);
+}
+
+.fortest{
+  top: 3.125rem !important;
+}
+
+.drawer {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  :global {
+    .am-drawer-sidebar {
+      background-color: #fff;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .am-drawer-sidebar .am-list {
+      width: 300px;
+      padding: 0;
+      overflow: scroll;
+      height: calc(100vh - 5rem);
+      // 隐藏滚动条
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    .am-drawer-content .am-drawer-draghandle{
+      width: 0;
+    }
+  }
+}
+.drawerList {
+  padding: 30px 0 40px;
+}
+.drawerList {
+  :global {
+    .am-list .am-list-body{
+      margin: 15px 0 35px;
+    }
+  }
+}
+
+.drawerFooter {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 45px;
+  width: 100%;
+  background-color: #fff;
+  z-index: 999;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    border-top: 1px solid #f0f0f0;
+    width: 88%;
+  }
+}
