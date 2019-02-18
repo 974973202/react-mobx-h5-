@@ -10,7 +10,7 @@ import MusicModal from './music_modal'
 class MusicFooter extends Component {
 
   @observable play = false
-  @observable musicModal = false
+  @observable musicModal = true
 
   @action
   handleChangePlay = (e) => {

@@ -4,6 +4,7 @@ import { observable, action } from 'mobx'
 class Entry {
   @observable loading = false
   @observable drawerArr = {};
+  @observable music = [];
 
   @action.bound
   async getDrawerArr() {
@@ -35,6 +36,46 @@ class Entry {
       this.loading = false
     }
   };
+
+  @action.bound
+  async getMusic() {
+    this.loading = true;
+    try {
+      this.music = [
+          {
+              image: require("../assets/music/song_1.jpg"),
+              audio: require("../assets/music/song_1.mp3"),
+              song: "丑八怪",
+              album: "意外",
+              singer: "薛之谦",
+              duration: 253,
+              isLike: true
+          },
+          {
+              image: require("../assets/music/song_2.jpg"),
+              audio: require("../assets/music/song_2.mp3"),
+              song: "小半",
+              album: "小梦大半",
+              singer: "陈粒",
+              duration: 297,
+              isLike: false
+          },
+          {
+              image: require("../assets/music/song_3.jpg"),
+              audio: require("../assets/music/song_3.mp3"),
+              song: "Shape of You",
+              album: "÷",
+              singer: "ed sheeran",
+              duration: 235,
+              isLike: false
+          }
+      ]
+    } catch (e) {
+      console.log(e)
+    } finally {
+      this.loading = false
+    }
+  }
 }
 
 export default new Entry();

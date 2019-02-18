@@ -4,7 +4,7 @@ import ppHOC from './hoc-test';
 @ppHOC
 class MusicHall extends Component {
   render() {
-    console.log(this.props)
+    // console.log(this.props)
     return (
       <Fragment>
         <input name="name" {...this.props.name}/>

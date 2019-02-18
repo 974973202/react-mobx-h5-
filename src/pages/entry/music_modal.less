@@ -9,6 +9,10 @@ body{
   height: calc(100vh - 45px);
   box-sizing: border-box;
   background-color : rgba(0,0,0,.2);
+// background-image: url('../../assets/music/song_1.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: 100%;
   .song_img{
       width : 50%;
       height: 0;
@@ -115,20 +119,23 @@ body{
           background-position: 50%;
       }
       .like_btn{
-          background-image: url('../../assets/music-icon/icon-like.png');
-          &.liking {
-              background-image: url('../../assets/music-icon/icon-like-solid.png');
-          }
+        background-image: url('../../assets/music-icon/icon-like.png');
       }
+      .liking {
+        background-image: url('../../assets/music-icon/icon-like-solid.png');
+      }
+
       .prev_btn{
-          background-image: url('../../assets/music-icon/icon-prev.png');
+        background-image: url('../../assets/music-icon/icon-prev.png');
       }
+      
       .play_btn{
-          background-image: url('../../assets/music-icon/icon-play.png');
-          &.playing{
-              background-image: url('../../assets/music-icon/icon-pause.png');   
-          }
+        background-image: url('../../assets/music-icon/icon-play.png');
       }
+      .playing{
+        background-image: url('../../assets/music-icon/icon-pause.png');   
+      }
+      
       .next_btn{
           background-image: url(../../assets/music-icon/icon-next.png);
       }
