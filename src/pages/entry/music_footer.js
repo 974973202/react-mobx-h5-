@@ -11,6 +11,7 @@ class MusicFooter extends Component {
 
   @observable play = false
   @observable musicModal = true
+  @observable myRef = React.createRef();
 
   @action
   handleChangePlay = (e) => {
@@ -20,19 +21,20 @@ class MusicFooter extends Component {
 
   @action
   handleChangeMusicModal = () => {
-    this.musicModal = !this.musicModal
+    this.musicModal = !this.musicModal;
+    console.log(this.myRef.current)
   }
 
   @action
   showActionSheet = (e) => {
     e.stopPropagation();
-    const BUTTONS = ['Operation1', 'Operation2', 'Operation2', 'Cancel'];
+    const BUTTONS = ['可不可以', '小半', 'Shape of you', '取消'];
     ActionSheet.showActionSheetWithOptions({
       className: styles.actionSheet,
       options: BUTTONS,
       cancelButtonIndex: BUTTONS.length - 1,
       // title: 'title',
-      message: <div>123</div>,
+      message: <div>歌曲详情</div>,
       maskClosable: true,
     },
     (buttonIndex) => {
@@ -88,7 +90,7 @@ class MusicFooter extends Component {
                 onLeftClick={this.handleChangeMusicModal}
               >可不可以</NavBar>
               <Content>
-                <MusicModal />
+                <MusicModal ref={this.myRef}/>
               </Content>
             </Container>
           </Modal> : 

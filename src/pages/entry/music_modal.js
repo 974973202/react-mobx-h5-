@@ -12,32 +12,30 @@ import { BlurImg } from '../../util/gaussBlur';
 }))
 @observer
 class MusicModal extends Component {
-  @observable index = 0;
-  @observable playBtn = true;
-  @observable status = 'pause';
-  @observable audio = new Audio();
-  @observable duration = 0;
+  @observable index = 0;  // 获取歌曲索引
+  @observable playBtn = true;  // 显示暂停还是播放按钮
+  @observable status = 'pause';  // 判断当前歌曲播放还是暂停状态
+  @observable audio = new Audio();  // 全局创建audio播放器
+  @observable duration = 0;  // 
   @observable startTime = 0;
   @observable timer = null;
   @observable lastper = 0;
   @observable beginMusicTime = '00:00';
 
-  // @observable offset = document.getElementById('pro_wrapper').offset()
-  // @observable width = document.getElementById('pro_wrapper').offset()
-
   componentDidMount() {
     const { entry } = this.props;
     entry.getMusic();
     const { music } = entry;
-    this.renderImg(music[this.index] && music[this.index].image);
-    this.renderAllTime(music[this.index] && music[this.index].duration)
+    this.music = music;
+    this.renderImg(music[this.index].image);
+    this.renderAllTime(music[this.index].duration)
   }
 
   componentDidUpdate(){
     const { entry } = this.props;
     const { music } = entry;
-    this.renderImg(music[this.index] && music[this.index].image)
-    this.formatTime(music[this.index] && music[this.index].duration)
+    this.renderImg(music[this.index].image)
+    this.formatTime(music[this.index].duration)
   }
 
   @action  // 切歌lastper置零
@@ -211,27 +209,29 @@ class MusicModal extends Component {
   render() {
     const { index, playBtn } = this
     const { music, loading } = this.props.entry;
+    if(!music[index]) {
+      return null;
+    }
     const { btn_wrapper, like_btn, liking, play_btn, playing } = styles;
-    const isLike = music[index] && music[index].isLike ? liking : like_btn;
+    const isLike = music[index].isLike ? liking : like_btn;
     const isPlay = playBtn ? play_btn : playing;
 
     return (
       <div id="music_modal" className={styles.wrapper}>
         <div className={styles.song_img}>
           <div className={styles.img_wrapper}>
-          { music[index] &&
+          { 
             <img src={music[index].image} alt="pic" />
           }
           </div>
         </div>
         <div className={styles.song_info}>
           { 
-            music[index] 
-              && <>
-                <div className={styles.song_name}>{music[index].song}</div>
-                <div className={styles.singer_name}>{music[index].singer}</div>
-                <div className={styles.album_name}>{music[index].album}</div>
-              </>
+            <>
+              <div className={styles.song_name}>{music[index].song}</div>
+              <div className={styles.singer_name}>{music[index].singer}</div>
+              <div className={styles.album_name}>{music[index].album}</div>
+            </>
           }
         </div>
         <div className={styles.pro}>
@@ -248,8 +248,7 @@ class MusicModal extends Component {
               </div>
             </div>
             {
-              music[index]
-                && <div className={styles.all_time}>{this.formatTime(music[this.index].duration)}</div>
+              <div className={styles.all_time}>{this.formatTime(music[this.index].duration)}</div>
             }
         </div>
         <div className={styles.control}>
